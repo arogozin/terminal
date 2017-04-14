@@ -5,6 +5,7 @@ import (
     "bufio"
     "bytes"
     "strings"
+    "fmt"
 )
 
 const RESET = "\033[2J"
@@ -19,11 +20,12 @@ func Clear() {
 
 func Flush() {
     for i, str := range strings.Split(Screen.String(), "\n") {
-        if i > Height() {
+        if i > int(Height()) {
             return
         }
         
-        Output.WriteString(str + "\n")
+        fmt.Println(i)
+        fmt.Println(str)
     }
     
     Output.Flush()

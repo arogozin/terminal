@@ -2,12 +2,9 @@ package terminal
 
 import (
     "fmt"
-    "bytes"
 )
 
-const CLEAR = "\033[2J"
-
-var Screen *bytes.Buffer = new(bytes.Buffer)
+const CLEAR = "\033[H\033[2J\033[3J"
 
 func Clear() {
     fmt.Println(CLEAR)

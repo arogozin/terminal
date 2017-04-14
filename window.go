@@ -1,11 +1,8 @@
 package terminal
 
 import (
-    "fmt"
-    "os"
     "syscall"
     "unsafe"
-    "runtime"
 )
 
 type windowSize struct {
@@ -16,28 +13,18 @@ type windowSize struct {
 }
 
 
-func GetWindowSize(*windowSize, error) {
-    windowSize := new(windowSize)
+func GetWindowSize() uint {
+    windowSize := &windowSize{}
     
-    var _TIOCGWINSZ int64
-    
-    switch runtime.GOOS {
-        case "linux":
-            _TIOCGWINSZ = 0x5413
-        case "darwin":
-            _TIOCGWINSZ = 1074295912
-    }
-    
-    r1, _, errno := syscall.Syscall(syscall.SYS_IOCTL,
+    returnCode, _, error := syscall.Syscall(syscall.SYS_IOCTL,
         uintptr(syscall.Stdin),
-        uintptr(_TIOCGWINSZ),
+        uintptr(syscall.TIOCGWINSZ),
         uintptr(unsafe.Pointer(windowSize)),
     )
     
-    if int(r1) == -1 {
-        fmt.Println("Error: ", os.NewSyscallError("getWindowSize", errno))
-        return nil, os.NewSyscallError("getWindowSize", errno)
+    if int(returnCode) == -1 {
+        panic(error)
     }
     
-    return windowSize, nil
+    return uint(windowSize.Col)
 }
